@@ -1,23 +1,70 @@
 #define  _CRT_SECURE_NO_WARNINGS 1
-//#define SQUARE(x) x*x
+#define SQUARE(x) (x)*(x)
+#define ADD(a, b) a+b
+#define POOR_MACRO(a, b) do \
+{	int _tmp = (a); \
+	(a) = (b); \
+	(b) = (_tmp); \
+} while(0)
+
+#define DEBUG_PRINT(expr) printf(#expr " = %d\n", expr)
+//#define SAFE_MACRO(a, b) do \
+//	{ int _tmp = (a); (a) = (b); (b) = _tmp; } while(0)
+
+
+#define LOG_VAR(var) printf(#var " = %d\n", var##_value)
+
 #include <iostream>
 
-class A
+int add(int a, int b)
 {
-public:
-	void func()
-	{
-		std::cout << "void func()" << std::endl;
-	}
-};
+	return a + b;
+}
+using namespace std;
 
 int main()
 {
-	A* ptr = nullptr;
-	ptr->func();
-	(*ptr).func();
+	int age_value = 25;
+	LOG_VAR(age);
+	DEBUG_PRINT(3 + 3);
+	/*int ret = SQUARE(1 + 2);
+	cout << ret << endl;
+	int ret2 = add(ret + ret, ret^2);
+	cout << ret2;*/
 	return 0;
 }
+
+//int main()
+//{
+//	/*int num1 = 10;
+//	int num2 = 20;
+//	int ret = ADD(num1, num2);
+//
+//	cout << typeid(ret).name() << endl;
+//
+//	cout << ret << endl;*/
+//	int x = 1, y = 2;
+//	POOR_MACRO(x , y);
+//	add(x + 2, 4);
+//	return 0;
+//}
+//class A
+//{
+//public:
+//	void func()
+//	{
+//		std::cout << "void func()" << std::endl;
+//	}
+//};
+//
+//int main()
+//{
+//	A* ptr = nullptr;
+//	ptr->func();
+//	(*ptr).func();
+//	return 0;
+//}
+
 
 //#define DEBUG 0
 //#ifdef DEBUG
