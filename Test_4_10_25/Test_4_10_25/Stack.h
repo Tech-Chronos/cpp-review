@@ -15,7 +15,7 @@ void InitStack(Stack& st)
 	st.top = -1;
 }
 
-void PushStack(Stack& st, int val)
+void PushStack(Stack& st, int& val)
 {
 	st.s[++st.top] = val;
 }
