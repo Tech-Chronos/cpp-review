@@ -27,7 +27,7 @@ using namespace std;
 //				vs 默认对其数是 8，Linux 没有默认对其数
 //  3. 整体的大小是自身最大对其数的整数倍（不算编译器自身的对其数）
 #pragma pack(7)
-class B
+struct B
 {
 public:
 	char ch;
