@@ -14,7 +14,7 @@ public:
 		cout << "MyClass() -> _b = " << _b << endl;
 		cout << "MyClass() -> _c = " << _c << endl;
 	}
-	/*~MyClass()
+	/*~MyClass()s
 	{
 		cout << "~MyClass()" << endl;
 	}*/
