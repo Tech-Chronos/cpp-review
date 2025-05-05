@@ -1,31 +1,38 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# CLion IDE 相关文件
+.idea/
+*.iml
+cmake-build-*/
+out/
 
-# Other files and folders
-.settings/
+# CMake 生成文件
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+*.cmake
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
-
-#过滤掉不想要文件和文件夹
+# 编译生成文件
+*.o
+*.a
+*.so
+*.dylib
 *.exe
-*.sln
-*.vcxproj
-*.filters
-*.user
-*.suo
-*.db
-*.ipch
-Debug/
-.vs
-Release/
+*.out
+*.d
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# 临时文件和日志
+*.log
+*.swp
+*.swo
+*~
+*.bak
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 测试相关
+test-results/
+
