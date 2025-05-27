@@ -125,8 +125,39 @@ void string_test9()
     std::cout << "str2 -> " << str2 << std::endl;
 }
 
+void string_test10()
+{
+    dsj::string str1;
+    dsj::string str2("hello world");
+    str1 += "hello Linux";
+
+    dsj::getline(std::cin,str1);
+
+    std::cout << str1 << std::endl;
+}
+
+void string_test11()
+{
+    dsj::string str1;
+    dsj::string str2("hello world");
+    str1 += "hello Linux";
+
+    dsj::string str3(str2);
+    std::cout << str3 << std::endl;
+}
+
+void string_test12()
+{
+    dsj::string str1;
+    dsj::string str2("hello world");
+    str1 += "hello Linux";
+
+    str1 = str2;
+    std::cout << str1 << std::endl;
+}
+
 int main()
 {
-    string_test9();
+    string_test12();
     return 0;
 }

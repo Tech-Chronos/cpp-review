@@ -23,25 +23,44 @@ namespace dsj
        }
 
        // 拷贝构造传统写法
+//       string(string& str)
+//       {
+//           _size = str._size;
+//           _capacity = str._capacity;
+//           _str = new char[_capacity + 1];
+//           strcpy(_str, str._str);
+//       }
+
+       // 拷贝构造现代写法
        string(string& str)
        {
-           _size = str._size;
-           _capacity = str._capacity;
-           _str = new char[_capacity + 1];
-           strcpy(_str, str._str);
+           string tmp(str._str);
+           swap(tmp);
+           // 注意这块一定要将_str 置空，不然析构函数会释放野指针，因为拷贝构造也会走初始化列表
+           // 对内置类型不做处理
+           tmp._str = nullptr;
+           tmp._size = 0;
+           tmp._capacity = 0;
        }
 
        // 赋值重载传统写法
-       string const& operator=(string& str)
+//       string const& operator=(string& str)
+//       {
+//           if (this != &str)
+//           {
+//               _size = str._size;
+//               _capacity = str._capacity;
+//               char* tmp = new char[_capacity + 1];
+//               delete[] _str;
+//               _str = tmp;
+//           }
+//           return *this;
+//       }
+
+        // 现代写法
+       string& operator=(string str)
        {
-           if (this != &str)
-           {
-               _size = str._size;
-               _capacity = str._capacity;
-               char* tmp = new char[_capacity + 1];
-               delete[] _str;
-               _str = tmp;
-           }
+           swap(str);
            return *this;
        }
 
@@ -316,12 +335,40 @@ namespace dsj
            }
            else
            {
+               // 这儿要加 '\0',不然还会继续往后读
+               buffer[127] = '\0';
                str += buffer;
                i = 0;
            }
        }
        if (i != 0)
        {
+           buffer[i] = '\0';
+           str += buffer;
+       }
+       return in;
+    }
+
+    std::istream& getline(std::istream& in, string& str)
+    {
+       str.clear();
+       char ch = in.get();
+       char buffer[128];
+       size_t i = 0;
+       while (ch != ' ' && ch != '\n')
+       {
+           buffer[i++] = ch;
+           if (i == 127)
+           {
+               buffer[i] = '\0';
+               str += buffer;
+               i = 0;
+           }
+           ch = in.get();
+       }
+       if (i != 0)
+       {
+           buffer[i] = '\0';
            str += buffer;
        }
        return in;
