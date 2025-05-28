@@ -1,0 +1,33 @@
+# 5.10 -12 （string2）
+
+依旧是string的使用
+
+1. 反向迭代器
+
+2. const 迭代器
+
+3. 扩容机制，第一次2倍，之后1.5倍，Linux是二倍扩容
+
+4. shrink_to_fit，缩容
+
+5. resize 和 reserve
+   - reserve预先保留空间，比capacity大才会扩容
+   - resize：< size 删除; size < n < capacity 插入; > capacity 扩容 + 插入
+
+6. assign
+
+7. 大数相加 OJ
+
+8. find substr
+
+   - 网址分割
+
+9. find_first_of
+
+10. getline
+
+    - scanf 和 cin 空格或者换行就读取完了
+
+11. 字符串中第一个 OJ
+
+    
