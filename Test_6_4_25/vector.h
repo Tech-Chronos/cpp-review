@@ -3,6 +3,7 @@
 //
 #include <iostream>
 #include <string>
+#include <vector>
 #include <cassert>
 #ifndef TEST_6_4_25_VECTOR_H
 #define TEST_6_4_25_VECTOR_H
@@ -21,6 +22,41 @@ namespace dsj
             ,_finish(_start)
             ,_endofstorage(_start + n)
         {}
+
+        // 迭代器区间构造
+        template<typename InputIterator>
+        vector(InputIterator it1, InputIterator it2)
+        {
+            while (it1 != it2)
+            {
+                push_back(*it1);
+                ++it1;
+            }
+        }
+
+        // n 个值构造
+        vector(size_t n, const T& val = T())
+        {
+            reserve(n);
+            while (n--)
+            {
+                push_back(val);
+            }
+        }
+
+        // initializer_list 构造
+        vector(const std::initializer_list<T>& il)
+        {
+            size_t size = il.size();
+            reserve(size);
+            typename std::initializer_list<T>::iterator it1 = il.begin();
+            typename std::initializer_list<T>::iterator it2 = il.end();
+            while (it1 != it2)
+            {
+                push_back(*it1);
+                ++it1;
+            }
+        }
 
         // v2(v1) 拷贝构造
         vector(vector<T>& v)
@@ -111,9 +147,18 @@ namespace dsj
         {
             if (n > capacity())
             {
+                // 记录一下原始的size，迭代器失效
                 size_t old_size = size();
                 iterator tmp = new T[n];
-                memcpy(tmp, _start, sizeof(T) * old_size);
+                //memcpy(tmp, _start, sizeof(T) * old_size);
+                for (size_t i = 0; i < size(); ++i)
+                {
+                    // 赋值就会进行深拷贝
+                    tmp[i] = _start[i];
+                }
+                // 释放之后，如果T是string类似的类型也会被释放，
+                // 析构的时候又会被delete，所以不能用memcpy
+                delete[] _start;
                 _start = tmp;
                 _finish = _start + old_size;
                 _endofstorage = _start + n;
@@ -157,7 +202,8 @@ namespace dsj
             ++_finish;
         }
 
-        void erase(iterator pos)
+        // 防止迭代器失效，返回类型改为iterator，返回值是删除元素的下一个位置
+        iterator erase(iterator pos)
         {
             assert(pos >= _start && pos < _finish);
             iterator begin = pos + 1;
@@ -167,6 +213,7 @@ namespace dsj
                 ++begin;
             }
             --_finish;
+            return pos;
         }
 
         void swap(vector<T> v)
@@ -188,9 +235,9 @@ namespace dsj
     }
 
     template<typename T>
-    void print_vector(vector<T>& v)
+    void print_vector(const vector<T>& v)
     {
-        typename vector<T>::iterator it = v.begin();
+        typename vector<T>::const_iterator it = v.begin();
         //auto it = v.begin();
         while (it != v.end())
         {
