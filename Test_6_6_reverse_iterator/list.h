@@ -40,6 +40,12 @@ namespace dsj
             return *(tmp._it);
         }
 
+        Ref operator*()
+        { 
+            iterator it = _it;
+            --it;
+            return *it;
+        }
 //        Ptr operator->()
 //        {
 //            Self tmp(_it);
