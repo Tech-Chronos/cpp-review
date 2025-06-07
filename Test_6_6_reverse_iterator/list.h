@@ -35,9 +35,9 @@ namespace dsj
 
         Ref operator*()
         {
-            Self tmp(_it);
-            --(tmp._it);
-            return *(tmp._it);
+            iterator it = _it;
+            --it;
+            return *it;
         }
 
 //        Ptr operator->()
