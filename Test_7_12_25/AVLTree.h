@@ -96,6 +96,72 @@ private:
         }
         parent->_bf = subR->_bf = 0;
     }
+
+    void RotateLR(Node* parent)
+    {
+        Node* subL = parent->_left;
+        Node* subLR = subL->_right;
+
+        int bf = subLR->_bf;
+        RotateL(subL);
+        RotateR(parent);
+
+        // 平衡因子的判断
+        if (bf == -1)
+        {
+            subLR->_bf = 0;
+            subL->_bf = 0;
+            parent->_bf = 1;
+        }
+        else if (bf == 1)
+        {
+            subLR->_bf = 0;
+            subL->_bf = -1;
+            parent->_bf = 0;
+        }
+        else if (bf == 0)
+        {
+            subLR->_bf = subL->_bf = parent->_bf = 0;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    Node* RotateRL(Node* parent)
+    {
+        Node* subR = parent->_right;
+        Node* subRL = subR->_left;
+
+        int bf = subRL->_bf;
+
+        RotateR(subR);
+        RotateL(parent);
+
+        if (bf == 1)
+        {
+            subRL->_bf = 0;
+            subR->_bf = 0;
+            parent->_bf = -1;
+        }
+        else if (bf == -1)
+        {
+            subRL->_bf = 0;
+            parent->_bf = 0;
+            subR->_bf = 1;
+        }
+        else if (bf == 0)
+        {
+            subRL->_bf = 0;
+            parent->_bf = 0;
+            subR->_bf = 0;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
 public:
     AVLTree()
       :_root(nullptr)
@@ -208,7 +274,35 @@ public:
     {
         _InOrder(_root);
     }
+
+    bool IsBalance()
+    {
+        return _IsBalance(_root);
+    }
+
+    int Height()
+    {
+        return Height(_root);
+    }
 private:
+    int _Height(Node* root)
+    {
+        if (root == nullptr)
+            return 0;
+        return max(_Height(root->_left), _Height(root->_right)) + 1;
+    }
+
+    bool _IsBalance(Node* root)
+    {
+        int left_height = Height(root->_left);
+        int right_height = Height(root->_right);
+
+        if (abs(left_height - right_height) < 2)
+            return true;
+        else
+            return false;
+    }
+
     void _InOrder(Node* root)
     {
         if (root)
