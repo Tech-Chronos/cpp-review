@@ -3,6 +3,9 @@
 //
 #include <iostream>
 #include <string>
+#include <vector>
+
+#include <time.h>
 #include <assert.h>
 
 using namespace std;
@@ -49,7 +52,12 @@ private:
         parent->_parent = subL;
 
         if (!ppNode)
+        {
             _root = subL;
+            subL->_parent = nullptr;
+        }
+
+
         else
         {
             if (ppNode->_left == parent)
@@ -80,7 +88,13 @@ private:
         parent->_parent = subR;
 
         if (!ppNode)
+        {
             _root = subR;
+
+            // 这里要更新 ！！！
+            subR->_parent = nullptr;
+        }
+
         else
         {
             if (ppNode->_left == parent)
@@ -228,12 +242,13 @@ public:
                         RotateL(parent);
                     else if (parent->_bf == -2 && cur->_bf == 1)
                     {
-
+                        RotateLR(parent);
                     }
                     else if (parent->_bf == 2 && cur->_bf == -1)
                     {
-
+                        RotateRL(parent);
                     }
+                    break;
                 }
                 else
                 {
@@ -282,9 +297,33 @@ public:
 
     int Height()
     {
-        return Height(_root);
+        return _Height(_root);
     }
+
+    int Size()
+    {
+        return _Size(_root);
+    }
+
 private:
+    int _Size(Node* root)
+    {
+        if (root == nullptr)
+        {
+            return 0;
+        }
+        return _Size(root->_left) + _Size(root->_right) + 1;
+    }
+
+//    int _Size(Node* root, int count = 0)
+//    {
+//        if (root == nullptr)
+//        {
+//            return count;
+//        }
+//        return _Size(root->_left, count + 1) + _Size(root->_right, count + 1);
+//    }
+
     int _Height(Node* root)
     {
         if (root == nullptr)
@@ -294,8 +333,8 @@ private:
 
     bool _IsBalance(Node* root)
     {
-        int left_height = Height(root->_left);
-        int right_height = Height(root->_right);
+        int left_height = _Height(root->_left);
+        int right_height = _Height(root->_right);
 
         if (abs(left_height - right_height) < 2)
             return true;
