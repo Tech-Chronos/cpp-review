@@ -2,7 +2,45 @@
 #include <functional>
 
 #include <string>
+#include <vector>
+#include <map>
 using namespace std;
+
+// 逆波兰表达式
+class Solution
+{
+public:
+    int evalRPN(vector<string>& tokens)
+    {
+        stack<int> st;
+        map<string, function<int(int, int)>> m =
+                {
+                        {"+", [](int left, int right) mutable -> int {return left + right;}},
+                        {"-", [](int left, int right) mutable -> int {return left - right;}},
+                        {"*", [](int left, int right) mutable -> int {return left * right;}},
+                        {"/", [](int left, int right) mutable -> int {return left / right;}},
+                };
+        for (auto& e : tokens)
+        {
+            if (m.count(e)) // 操作符
+            {
+                int right = st.top();
+                st.pop();
+                int left = st.top();
+                st.pop();
+
+                auto func = m[e];
+                st.push(func(left, right));
+            }
+            else             // 操作数
+            {
+                st.push(stoi(e));
+            }
+        }
+        return st.top();
+    }
+};
+
 
 int sub(int left, int right)
 {
@@ -112,7 +150,12 @@ int main()
 {
     //function_test();
 
-    bind_test();
+    //bind_test();
+    vector<string> vs = {"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
+
+    Solution sl;
+    // 22
+    cout << sl.evalRPN(vs) << endl;
 
     return 0;
 }
