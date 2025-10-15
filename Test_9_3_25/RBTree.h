@@ -182,9 +182,14 @@ private:
     {
         if (!node)
         {
-            if (target == -1)       // 第一次到 NIL：记录基准
-                target = blackCnt;
             return blackCnt == target;
+        }
+
+        // 不存在连续的红色节点
+        if (node->_parent && node->_col == RED)
+        {
+            if (node->_parent->_col == RED)
+                return false;
         }
 
         if (node->_col == BLACK)

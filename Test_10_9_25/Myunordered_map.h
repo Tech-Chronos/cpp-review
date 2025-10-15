@@ -7,21 +7,23 @@
 #define TEST_10_9_25_MYUNORDERED_MAP_H
 namespace dsj
 {
+    template<class K, class V>
+    struct KeyOfT
+    {
+        const K& operator()(const pair<K, V>& kv)
+        {
+            return kv.first;
+        }
+    };
+
     template<class K, class V, class HashFunc = HashFunc<K>>
     class unordered_map
     {
-    public:
-        struct KeyOfT
-        {
-            const K& operator()(const pair<K, V>& kv)
-            {
-                return kv.first;
-            }
-        };
+
     public:
         typedef close_hash::HashData<pair<K, V>> Node;
-        typedef typename close_hash::HashBucket<K, pair<K, V>, KeyOfT, HashFunc>::Iterator iterator;
-        typedef typename close_hash::HashBucket<K, pair<K, V>, KeyOfT, HashFunc>::Const_Iterator const_iterator;
+        typedef typename close_hash::HashBucket<K, pair<K, V>, KeyOfT<K, V>, HashFunc>::Iterator iterator;
+        typedef typename close_hash::HashBucket<K, pair<K, V>, KeyOfT<K, V>, HashFunc>::Const_Iterator const_iterator;
 
 
         const_iterator begin() const
@@ -67,7 +69,7 @@ namespace dsj
         }
 
     private:
-        close_hash::HashBucket<K, pair<K, V>, KeyOfT, HashFunc> _hb;
+        close_hash::HashBucket<K, pair<K, V>, KeyOfT<K, V>, HashFunc> _hb;
     };
 
     void PrintHash(const unordered_map<int, std::string>& hashTable)
@@ -175,7 +177,7 @@ namespace dsj
         auto it = countmap.begin();
         while (it != countmap.end())
         {
-            cout << it->first <<": " << it->second;
+            cout << "\n" << it->first <<": " << it->second << endl;
             ++it;
         }
     }

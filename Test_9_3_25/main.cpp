@@ -43,6 +43,7 @@ void TestRBTree2()
     std::cout << rb.IsBlackHeightBalanced() << std::endl;
 
 }
+
 int main()
 {
     TestRBTree1();

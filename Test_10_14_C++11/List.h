@@ -25,10 +25,10 @@ namespace dsj
         {}
 
         template<class ...Args>
-        ListNode(Args ...args)
+        ListNode(Args&& ...args)
                 :_prev(nullptr)
                 ,_next(nullptr)
-                ,_val(args...)
+                ,_val(std::forward<T>(args)...)
         {}
 
     public:
