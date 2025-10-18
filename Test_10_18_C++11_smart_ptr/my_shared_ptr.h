@@ -103,7 +103,7 @@ namespace dsj
                 :_ptr(ptr)
         {
             _ref_count = new std::atomic<int>;
-            *_ref_count = 1;
+            _ref_count->fetch_add(1, std::memory_order_relaxed);
 
             //_ptr_mtx = new std::mutex;
             //std::cout << "&_ref_count-> " << _ref_count << " _ref_count-> " << *_ref_count << std::endl;
@@ -116,7 +116,8 @@ namespace dsj
         {
             // 这个不是⚛️原子操作
             //_ptr_mtx->lock();
-            ++(*_ref_count);
+            _ref_count->fetch_add(1, std::memory_order_relaxed);
+
             //std::cout << "&_ref_count-> " << _ref_count << " _ref_count-> " << *_ref_count << std::endl;
             //_ptr_mtx->unlock();
         }
@@ -126,11 +127,12 @@ namespace dsj
         {
             if (this != &sptr)
             {
+                _ref_count->fetch_add(1, std::memory_order_relaxed);
+
                 release();
                 _ptr = sptr._ptr;
                 _ref_count = sptr._ref_count;
                 //_ptr_mtx->lock();
-                ++(*_ref_count);
                 //_ptr_mtx->unlock();
             }
             std::cout << "&_ref_count-> " << _ref_count << " _ref_count-> " << *_ref_count <<std::endl;
@@ -162,7 +164,7 @@ namespace dsj
             else
             {
                 //_ptr_mtx->lock();
-                --(*_ref_count);
+                _ref_count->fetch_sub(1,std::memory_order_acq_rel);
                 //_ptr_mtx->unlock();
             }
         }
