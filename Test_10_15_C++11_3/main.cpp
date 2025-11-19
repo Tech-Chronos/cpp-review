@@ -141,21 +141,20 @@ void bind_test()
     function<void(Test, string, double, double)> func8 = bind(&Test::myprint, placeholders::_1, placeholders::_2 ,placeholders::_3, placeholders::_4);
     func8(Test(), "长门", 90, 60);
 
-    function<void(Test*, double, double)> func9 = bind(&Test::myprint, placeholders::_1, "鸣人" ,placeholders::_2, placeholders::_3);
-    Test t1;
-    func9(&t1, 100, 80);
+    function<void(double, double)> func9 = bind(&Test::myprint, Test(), "鸣人" ,placeholders::_1, placeholders::_2);
+    func9(100, 80);
 }
 
 int main()
 {
     //function_test();
 
-    //bind_test();
-    vector<string> vs = {"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
-
-    Solution sl;
-    // 22
-    cout << sl.evalRPN(vs) << endl;
+    bind_test();
+//    vector<string> vs = {"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
+//
+//    Solution sl;
+//    // 22
+//    cout << sl.evalRPN(vs) << endl;
 
     return 0;
 }
