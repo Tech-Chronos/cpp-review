@@ -195,12 +195,14 @@ void MergeSort(int* arr, int begin, int end)
 void MergeSortNonR(int* a, int n)
 {
     int* tmp = new int[n];
+    // 先一个一组
     int gap = 1;
     while (gap < n)
     {
         int i = 0;
         for (i = 0; i < n; i += gap * 2)
         {
+            // 相邻两组比较
             int left1 = i, right1 = i + gap - 1;
             int left2 = i + gap, right2 = i + 2*gap - 1;
             if (right1 >= n || left2 >= n)
@@ -237,13 +239,41 @@ void MergeSortNonR(int* a, int n)
     }
 }
 
+void CountSort(int* arr, int n)
+{
+    int max = arr[0];
+    for (int i = 0; i < n; ++i)
+    {
+        if (max < arr[i])
+            max = arr[i];
+    }
+
+    int* tmp = new int[max + 1](0);
+
+    for (int i = 0; i < n; ++i)
+    {
+        ++tmp[arr[i]];
+    }
+
+    int j = 0;
+    for (int i = 0; i < max; ++i)
+    {
+        while (tmp[i] > 0)
+        {
+            arr[j++] = i;
+            --tmp[i];
+        }
+    }
+}
+
 int main()
 {
     int original[] {2,2,4,1,9,3,5,13,7,0,8,10,16};
     // QuickSort_Hoare(original, 0, sizeof(original) / sizeof(int) - 1);
     // QuickSort_Hole(original, 0, sizeof(original) / sizeof(int) - 1);
     // QuickSort_DoublePointer(original, 0, sizeof(original) / sizeof(int) - 1);
-    MergeSort(original, 0, sizeof(original) / sizeof(int) - 1);
+    // MergeSort(original, 0, sizeof(original) / sizeof(int) - 1);
+    CountSort(original, sizeof(original) / sizeof(int));
     for (auto e : original)
     {
         std::cout << e << " ";
