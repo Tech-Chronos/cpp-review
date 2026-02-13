@@ -187,6 +187,58 @@ void HeapSort(int* arr, int n)
     }
 }
 
+void BubbleSort(int* arr, int n)
+{
+    // n - 1 轮 假设n = 6
+    for (int i = 0; i < n - 1; ++i)
+    {
+        bool flag = false;
+        // 每一轮比较的次数 n - 1 - i
+        // 第一轮: n - 1 - 0 = 5
+        // 第二轮: n - 1 - 1 = 4
+        for (int j = 0; j < n - 1 - i; ++j)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                flag = true;
+                swap(&arr[j], &arr[j + 1]);
+            }
+        }
+        if (flag == false)
+            break;
+    }
+}
+
+void QuickSort(int* arr, int begin, int end)
+{
+    if (begin >= end) return;
+    int pivot = arr[begin];
+    int left = begin, right = end;
+    while (left < right)
+    {
+        while (left < right && arr[right] >= pivot)
+        {
+            --right;
+        }
+        while (left < right && arr[left] <= pivot)
+        {
+            ++left;
+        }
+
+        std::swap(arr[left], arr[right]);
+    }
+    // 相遇的地方就是最后比pivot小的地方
+    std::swap(arr[begin], arr[left]);
+    int index = left;
+    QuickSort(arr, begin, index - 1);
+    QuickSort(arr, index + 1, end);
+}
+
+//void Partition(int* arr, int left, int right)
+//{
+//
+//}
+
 int main()
 {
     int arr[] = {8,9,1,7,2,3,5,4,6,0};
@@ -194,7 +246,9 @@ int main()
 //    ShellSort(arr, sizeof(arr) / sizeof(int));
 //    SelectSort(arr, sizeof(arr) / sizeof(int));
 //    SelectSort_Bi(arr, sizeof(arr) / sizeof(int));
-    HeapSort(arr, sizeof(arr) / sizeof(int));
+//    HeapSort(arr, sizeof(arr) / sizeof(int));
+//    BubbleSort(arr, sizeof(arr) / sizeof(int));
+    QuickSort(arr, 0, sizeof(arr) / sizeof(int) - 1);
     for (auto e : arr)
     {
         std::cout << e << " ";
