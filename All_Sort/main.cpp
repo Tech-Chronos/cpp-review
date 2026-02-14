@@ -6,6 +6,7 @@
 class Sort
 {
 private:
+    // 三数取中
     static int GetMidIndex(std::vector<int>& arr, int begin, int end)
     {
         int mid = begin + (end - begin) / 2;
@@ -25,6 +26,7 @@ private:
         }
     }
 private:
+    // 向下建堆
     static void AdjustDown(std::vector<int>& arr, int parent, int size)
     {
         int child = (parent * 2) + 1;
@@ -47,6 +49,7 @@ private:
         }
     }
 
+    // Hoare 快排
     static int Partition_Hoare(std::vector<int>& arr, int begin, int end)
     {
         int pivot_index = GetMidIndex(arr, begin, end);
@@ -70,7 +73,6 @@ private:
         return left;
     }
 
-
     static void QuickSort_Hoare(std::vector<int>& arr, int begin, int end)
     {
         if (begin >= end)
@@ -80,6 +82,7 @@ private:
         QuickSort_Hoare(arr, index + 1, end);
     }
 
+    // 挖坑法快排
     static int Partition_Holei(std::vector<int>& arr, int begin, int end)
     {
         // 找中间值，交换
@@ -120,7 +123,7 @@ private:
         QuickSort_Holei(arr, index + 1, end);
     }
 
-    // 双指针
+    // 双指针快排
     static int Partition_Lumto(std::vector<int>& arr, int begin, int end)
     {
         int mid_index = GetMidIndex(arr, begin, end);
@@ -149,6 +152,7 @@ private:
         QuickSort_Lumto(arr, index + 1, end);
     }
 
+    // 非递归快排
     static void QuickSort_Lumto_NonR(std::vector<int>& arr, int begin, int end)
     {
         if (begin >= end)
@@ -177,6 +181,43 @@ private:
             }
         }
     }
+
+    // 归并排序非递归
+    static void MergeSort(std::vector<int>& arr, int begin, int end, int* tmp)
+    {
+        if (begin >= end)
+            return;
+        // 先分
+        int mid = begin + (end - begin) / 2;
+        MergeSort(arr, begin, mid, tmp);
+        MergeSort(arr, mid + 1, end, tmp);
+
+        // 再合
+        int left1 = begin, right1 = mid;
+        int left2 = mid + 1, right2 = end;
+        int i = left1;
+        while (left1 <= right1 && left2 <= right2)
+        {
+            if (arr[left1] < arr[left2])
+            {
+                tmp[i++] = arr[left1++];
+            }
+            else
+            {
+                tmp[i++] = arr[left2++];
+            }
+        }
+        while (left1 <= right1)
+        {
+            tmp[i++] = arr[left1++];
+        }
+        while (left2 <= right2)
+        {
+            tmp[i++] = arr[left2++];
+        }
+        std::copy(&tmp[begin], &tmp[i], &arr[begin]);
+    }
+
 
 public:
     // 插入排序
@@ -319,6 +360,66 @@ public:
     {
         QuickSort_Lumto_NonR(arr, 0, (int)arr.size() - 1);
     }
+
+    static void _MergeSort(std::vector<int>& arr)
+    {
+        int* tmp = new int[arr.size()];
+        if (!tmp)
+        {
+            std::cerr << "new error!" << std::endl;
+            return;
+        }
+        MergeSort(arr,0, arr.size() - 1, tmp);
+    }
+
+    static void _MergeSortNonR(std::vector<int>& arr)
+    {
+        // int* tmp = new int[arr.size()];
+        std::vector<int>* tmp = new std::vector<int>(arr.size());
+        int gap = 1;
+        int size = (int)arr.size();
+        while (gap < arr.size())
+        {
+            for (int i = 0; i < arr.size(); i += 2 * gap)
+            {
+                int left1 = i, right1 = i + gap - 1;
+                int left2 = i + gap, right2 = i + 2*gap - 1;
+
+                if (right1 >= arr.size() || left2 >= arr.size())
+                {
+                    break;
+                }
+                else if (right2 >= arr.size())
+                {
+                    right2 = arr.size() - 1;
+                }
+
+                int j = i;
+                while (left1 <= right1 && left2 <= right2)
+                {
+                    if (arr[left1] < arr[left2])
+                    {
+                        (*tmp)[j++] = arr[left1++];
+                    }
+                    else
+                    {
+                        (*tmp)[j++] = arr[left2++];
+                    }
+                }
+                while (left1 <= right1)
+                {
+                    (*tmp)[j++] = arr[left1++];
+                }
+                while (left2 <= right2)
+                {
+                    (*tmp)[j++] = arr[left2++];
+                }
+
+                std::copy(tmp->begin() + i, tmp->begin() + j, &arr[i]);
+            }
+            gap *= 2;
+        }
+    }
 };
 
 
@@ -332,7 +433,9 @@ int main()
     // Sort::BubbleSort(original);
     // Sort::_QuickSort_Hoare(original);
     // Sort::_QuickSort_Holei(original);
-    Sort::_QuickSort_Lumto_NonR(original);
+    // Sort::_QuickSort_Lumto_NonR(original);
+    // Sort::_MergeSort(original);
+    Sort::_MergeSortNonR(original);
 
     for (auto e : original)
     {
