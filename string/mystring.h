@@ -218,6 +218,34 @@ public:
         }
     }
 
+    void resize(int n, char ch = ' ')
+    {
+        if (n < _size)
+        {
+            _size = n;
+            _str[n] = '\0';
+        }
+        else if (n <= _capacity)
+        {
+            for (int i = _size; i < n; ++i)
+            {
+                _str[i] = ch;
+            }
+            _str[n] = '\0';
+            _size = n;
+        }
+        else
+        {
+            reserve(n);
+            for (int i = _size; i < n; ++i)
+            {
+                _str[i] = ch;
+            }
+            _str[n] = '\0';
+            _size = n;
+        }
+    }
+
     void push_back(char c)
     {
         if (_size == _capacity)
@@ -343,15 +371,10 @@ public:
     mystring& erase(size_t pos, size_t len = npos)
     {
         assert(pos >= 0 && pos < _size);
-        if (pos + len < _size)
+        if (len == npos || pos + len < _size)
         {
-            int left = pos + 1;
-            while (left <= _size)
-            {
-                _str[left - 1] = _str[left];
-                ++left;
-            }
-            _size -= len;
+            memcpy(_str + pos, _str + pos + len, _size - pos - len + 1);
+            _size = _size - len;
         }
         else
         {
@@ -366,6 +389,48 @@ public:
         return _str;
     }
 
+    size_t find(char ch, size_t pos = 0)
+    {
+        for (int i = pos; i < _size; ++i)
+        {
+            if (_str[i] == ch)
+            {
+                return i;
+            }
+        }
+        return npos;
+    }
+
+    size_t find(char* str, size_t pos = 0)
+    {
+        const char* p = strstr(_str, str);
+        if (!p)
+            return npos;
+        return p - _str;
+    }
+
+    mystring substr(size_t pos = 0, size_t len = npos)
+    {
+        mystring sub;
+        if (_size - pos >= len)
+        {
+            return _str + pos;
+        }
+        else
+        {
+            for (int i = pos; i < len; ++i)
+            {
+                sub += _str[i];
+            }
+        }
+        return sub;
+    }
+
+    static std::ostream mystring::operator<<(const std::ostream& stream, mystring& str)
+    {
+        stream << str.c_str();
+    }
+
 private:
     char* _str;
     size_t _size;
@@ -374,5 +439,8 @@ private:
 };
 
 size_t mystring::npos = -1;
+
+// std::cout <<
+
 
 #endif //STRING_MYSTRING_H
