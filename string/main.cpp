@@ -149,5 +149,9 @@ int main()
     // TestReserveWithPushBack();
     // TestReserveAddress();
 
+    mystring str;
+
+    Getline(std::cin, str);
+    std::cout << str << std::endl;
     return 0;
 }

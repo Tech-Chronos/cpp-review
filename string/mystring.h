@@ -250,8 +250,8 @@ public:
     {
         if (_size == _capacity)
         {
-            int newcapacity = capacity() == 0 ? 1 : 2 * _capacity;
-            reserve(newcapacity);
+            _capacity = (capacity() == 0 ? 1 : 2 * capacity());
+            reserve(_capacity);
         }
         _str[_size++] = c;
         _str[_size] = '\0';
@@ -265,7 +265,8 @@ public:
             int newcapacity = capacity();
             while (newcapacity < len + _size)
             {
-                newcapacity == 0 ? 1 : 2 * capacity();
+                newcapacity = (newcapacity == 0 ? 1 : 2 * capacity());
+                _capacity = newcapacity;
             }
             reserve(newcapacity);
         }
@@ -282,7 +283,8 @@ public:
             int newcapacity = capacity();
             while (newcapacity < len + _size)
             {
-                newcapacity == 0 ? 1 : 2 * capacity();
+                newcapacity = (newcapacity == 0 ? 1 : 2 * capacity());
+                _capacity = newcapacity;
             }
             reserve(newcapacity);
         }
@@ -309,7 +311,8 @@ public:
                 int newcapacity = capacity();
                 while (newcapacity < str.size() + _size)
                 {
-                    newcapacity == 0 ? 1 : 2 * capacity();
+                    newcapacity = (newcapacity == 0 ? 1 : 2 * capacity());
+                    _capacity = newcapacity;
                 }
                 reserve(newcapacity);
             }
@@ -426,10 +429,13 @@ public:
         return sub;
     }
 
-    static std::ostream mystring::operator<<(const std::ostream& stream, mystring& str)
-    {
-        stream << str.c_str();
-    }
+
+    // std::ostream& operator<<(std::ostream& stream)
+    // {
+    //     stream << c_str();
+    //     stream << std::endl;
+    //     return stream;
+    // }
 
 private:
     char* _str;
@@ -440,7 +446,69 @@ private:
 
 size_t mystring::npos = -1;
 
-// std::cout <<
+std::ostream& operator<<(std::ostream& stream, mystring& str)
+{
+    stream << str.c_str();
+    return stream;
+}
 
+std::istream& operator>>(std::istream& stream, mystring& str)
+{
+    str.clear();
+
+    char ch;
+    ch = stream.get();
+    char buffer[128];
+    int i = 0;
+    while (ch != ' ' && ch != '\n')
+    {
+        buffer[i++] = ch;
+
+        if (i == 127)
+        {
+            buffer[127] = '\0';
+            str += buffer;
+            i = 0;
+        }
+
+        ch = stream.get();
+    }
+
+    if (i > 0)
+    {
+        buffer[i] = '\0';
+        str += buffer;
+    }
+
+    return stream;
+}
+
+std::istream& Getline(std::istream& in, mystring& str)
+{
+    in >> std::ws;
+    char ch;
+    in.get(ch);
+    char buffer[128] = { 0 };
+    int i = 0;
+    while (ch != '\n')
+    {
+        buffer[i++] = ch;
+
+        if (i == 127)
+        {
+            buffer[127] = 0;
+            str += buffer;
+            i = 0;
+        }
+        ch = in.get();
+    }
+
+    if (i > 0)
+    {
+        buffer[i] = 0;
+        str += buffer;
+    }
+    return in;
+}
 
 #endif //STRING_MYSTRING_H
