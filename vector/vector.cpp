@@ -75,8 +75,8 @@ void test5()
 void test6()
 {
     dsj::vector<std::string> v;
-    v.push_back("11111");
-    v.push_back("22222");
+    v.push_back("11111"); // 调用 push_back 就是构造 + 拷贝构造
+    v.push_back("22222"); // 调用 emplace_back 就是 直接构造
     v.push_back("33333");
     v.push_back("44444");
     v.push_back("55555");
@@ -86,6 +86,7 @@ void test6()
     v.push_back("99999");
     v.push_back("00000");
 
+    dsj::vector<std::string> v2 = std::move(v);
     for (auto& e : v)
     {
         std::cout << e << " ";
@@ -95,11 +96,86 @@ void test6()
 
 void test7()
 {
-    
+    dsj::vector<std::string> v;
+
+    v.emplace_back("hello");
+}
+
+// template<typename... Args>
+// void print(Args... args)
+// {
+//     (std::cout << ... <<  args);
+// }
+
+void print()
+{
+    std::cout << "\n";
+}
+
+template <class T, class ...Rest>
+void print(T first, Rest ...rest)
+{
+    std::cout << first << " ";
+    print(rest ...);
+}
+
+template<class ...Args>
+void out(Args ...args)
+{
+    (std::cout << ... << args) << " ";
+
+}
+
+void test8()
+{
+    dsj::vector<std::pair<std::string, std::string>> v;
+
+    v.push_back(std::make_pair("1111", "1111"));
+    v.emplace_back("1111","1111");
+}
+
+void test9()
+{
+    dsj::vector<std::pair<std::string, int>> v;
+    // strin构造 和 string移动构造
+    v.push_back(std::make_pair(std::string("Tom"), 18));
+
+    // 直接就是 string 的构造
+    v.emplace_back("Tom", 18);
+
 }
 
 int main()
 {
-    test6();
+    // print(1,"hello world", 2.0);
+    // out(1,"hello world", 2.0);
+    test9();
     return 0;
 }
+
+// void g(int&)
+// {
+//     std::cout << "lvalue\n";
+// }
+//
+// void g(int&&)
+// {
+//     std::cout << "rvalue\n";
+// }
+//
+// template<class T>
+// void f(T&& x)
+// {
+//     g(x);
+//     //g(std::move(x));
+//     g(std::forward<T>(x));
+// }
+//
+// int main()
+// {
+//     int a = 10;
+//     f(a);
+//     f(20);
+//
+//     int&& b = 10;
+// }

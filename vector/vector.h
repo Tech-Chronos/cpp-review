@@ -161,6 +161,18 @@ namespace dsj
             }
         }
 
+        // 移动构造
+        vector(vector&& other)
+        {
+            _start = other._start;
+            _finish = other._finish;
+            _end_of_storage = other._end_of_storage;
+
+            other._start = nullptr;
+            other._finish = nullptr;
+            other._end_of_storage = nullptr;
+        }
+
         // v2 = v1;
         // vector& operator=(const vector& other)
         // {
@@ -182,6 +194,22 @@ namespace dsj
             std::swap(_start, other._start);
             std::swap(_finish, other._finish);
             std::swap(_end_of_storage, other._end_of_storage);
+
+            return *this;
+        }
+
+        vector& operator=(vector&& other)
+        {
+            if (this != &other)
+            {
+                _start = other._start;
+                _finish = other._finish;
+                _end_of_storage = other._end_of_storage;
+
+                other._start = nullptr;
+                other._finish = nullptr;
+                other._end_of_storage = nullptr;
+            }
 
             return *this;
         }
@@ -253,7 +281,67 @@ namespace dsj
         void push_back(const T& val)
         {
             // 判断是否需要扩容
-            if (size() == capacity())
+            // if (size() == capacity())
+            // {
+            //     size_t oldsize = size();
+            //     // 给出新空间大小
+            //     size_t new_capacity = (capacity() == 0) ? 4 : 2 * capacity();
+            //
+            //     T* tmp = new T[new_capacity];
+            //     for (int i = 0; i < size(); ++i)
+            //     {
+            //         tmp[i] = _start[i];
+            //     }
+            //
+            //     // 释放旧空间
+            //     delete[] _start;
+            //
+            //     // 更新成员变量
+            //     _start = tmp;
+            //     _finish = tmp + oldsize;
+            //     _end_of_storage = tmp + new_capacity;
+            // }
+            // *_finish = val;
+            // ++_finish;
+            emplace_back(val);
+        }
+
+        void push_back(T&& val) // 到这里 val 已经构造了一次
+        {
+            // 判断是否需要扩容
+            // if (size() == capacity())
+            // {
+            //     size_t oldsize = size();
+            //     // 给出新空间大小
+            //     size_t new_capacity = (capacity() == 0) ? 4 : 2 * capacity();
+            //
+            //     T* tmp = new T[new_capacity];
+            //     for (int i = 0; i < size(); ++i)
+            //     {
+            //         tmp[i] = std::move(_start[i]);
+            //     }
+            //
+            //     // 释放旧空间
+            //     delete[] _start;
+            //
+            //     // 更新成员变量
+            //     _start = tmp;
+            //     _finish = tmp + oldsize;
+            //     _end_of_storage = tmp + new_capacity;
+            // }
+            // // 本身是左值，要move成右值
+            // *_finish = std::move(val);
+            // //*_finish = std::forward<T>(val);
+            // ++_finish;
+
+            emplace_back(std::move(val));
+        }
+
+        // 模版 + 可变参数 -> 万能引用
+        template<class ...Args>
+        void emplace_back(Args&& ...args)
+        {
+            if (_finish == _end_of_storage)
             {
                 size_t oldsize = size();
                 // 给出新空间大小
@@ -262,7 +350,7 @@ namespace dsj
                 T* tmp = new T[new_capacity];
                 for (int i = 0; i < size(); ++i)
                 {
-                    tmp[i] = _start[i];
+                    tmp[i] = std::move(_start[i]);
                 }
 
                 // 释放旧空间
@@ -273,7 +361,9 @@ namespace dsj
                 _finish = tmp + oldsize;
                 _end_of_storage = tmp + new_capacity;
             }
-            *_finish = val;
+            // new (_finish) T(std::forward<Args>(args)...);
+            // 传递T的左值就是拷贝构造，传递T的右值就是移动构造，传递T所需的构造参数就是直接构造
+            new (_finish) T(std::forward<Args>(args)...);
             ++_finish;
         }
 
