@@ -19,6 +19,7 @@ public:
         :_val(val)
         ,_left(nullptr)
         ,_right(nullptr)
+        ,_parent(nullptr)
     {}
 
     T& Get()
@@ -30,6 +31,7 @@ private:
     T _val;
     BSTreeNode* _left;
     BSTreeNode* _right;
+    BSTreeNode* _parent;
 };
 
 template <class T>
@@ -37,7 +39,78 @@ class BSTree
 {
 public:
     typedef BSTreeNode<T> Node;
+private:
+    void RotateR(Node* parent)
+    {
+        Node* subL = parent->left;
+        Node* subLR = subL->_right;
+        // 1.
+        parent->_left = subLR;
+        if (subLR)
+        {
+            subLR->_parent = parent;
+        }
 
+        // 2.
+        subL->_right = parent;
+
+        // 3.
+        Node* ppNode = parent->parent;
+        parent->_parent = subL;
+
+        // 4.
+        if (!ppNode)
+        {
+            subL = _root;
+            subL->_parent = nullptr;
+        }
+        else
+        {
+            if (ppNode->_left == parent)
+            {
+                ppNode->_left = subL;
+                subL->_parent = ppNode;
+            }
+            else
+            {
+                ppNode->_right = subL;
+                subL->_parent = ppNode;
+            }
+        }
+    }
+
+    void RotateL(Node* parent)
+    {
+        Node* subR = parent->_right;
+        Node* subRL = subR->_left;
+        parent->_right = subRL;
+        if (subRL)
+            subRL->_parent = parent;
+
+        subR->_left = parent;
+        Node* ppNode = parent->_parent;
+        parent->_parent = subR;
+
+        if (!ppNode)
+        {
+            _root = subR;
+            subR->_parent = nullptr;
+        }
+        else
+        {
+            if (ppNode->_left == parent)
+            {
+                ppNode->_left = subR;
+                subR->_parent = ppNode;
+            }
+            else
+            {
+                ppNode->_right = subR;
+                subR->_parent = ppNode;
+            }
+        }
+    }
+public:
     bool insert(const T& val)
     {
         Node* newnode = new Node(val);
