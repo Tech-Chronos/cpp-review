@@ -43,6 +43,7 @@ public:
         {
             delete _ptr;
             delete _count;
+            delete _mtx;
             _count = nullptr;
             _ptr = nullptr;
         }
