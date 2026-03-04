@@ -50,19 +50,14 @@ public:
         _mtx->unlock();
     }
 
-    shared_ptr<T>& operator=(const shared_ptr<T>& other)
+    shared_ptr<T>& operator=(shared_ptr<T> other)
     {
-        if (this != &other)
-        {
-            release();
-            _ptr = other._ptr;
-            _count = other._count;
-            _mtx = other._mtx;
 
-            _mtx->lock();
-            ++(*_count);
-            _mtx->unlock();
-        }
+        std::swap(_ptr, other._ptr);
+        std::swap(_count, other._count);
+        std::swap(_mtx, other._mtx);
+        std::swap(_del, other._del);
+
         return *this;
     }
 
